@@ -5,6 +5,10 @@ namespace Webhkp\Pvalidate\Validators;
 use Attribute;
 use ReflectionProperty;
 
+/**
+ * Abstract Validator
+ * Used by all validators
+ */
 abstract class AbstractValidator {
     protected bool $valid = true;
     protected array $errors = [];
