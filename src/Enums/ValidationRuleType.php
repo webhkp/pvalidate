@@ -12,4 +12,5 @@ enum ValidationRuleType: int {
     case Allow = 3;
     case Disallow = 4;
     case Regex = 5;
+    case Custom = 100;
 }

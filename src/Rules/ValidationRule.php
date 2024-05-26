@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webhkp\Pvalidate\Rules;
 
 use ReflectionProperty;
+use ReflectionEnum;
 use Webhkp\Pvalidate\Enums\ValidationRuleType;
 use Webhkp\Pvalidate\Exceptions\PvalidateException;
 
@@ -17,20 +18,6 @@ abstract class ValidationRule {
 
     protected $value = null;
 
-    // /**
-    //  * Undocumented variable
-    //  *
-    //  * @var boolean
-    //  */
-    // protected bool $valid = true;
-
-    // /**
-    //  * Undocumented variable
-    //  *
-    //  * @var array
-    //  */
-    // protected array $errors = [];
-
     public function getName(): string {
         return $this->name;
     }
@@ -40,7 +27,7 @@ abstract class ValidationRule {
     }
 
     /**
-     * Undocumented function
+     * Apply validation
      *
      * @param ReflectionProperty $prop
      * @param object $object
@@ -50,23 +37,37 @@ abstract class ValidationRule {
         $this->value = $prop->getValue($object);
         $this->name = $prop->name;
 
-        // $this->process();
-
         return $this;
     }
 
+    /**
+     * Parse and set result
+     *
+     * @param $value
+     * @return ValidationRule
+     */
     public function safeParse($value): ValidationRule {
         $this->value = $value;
 
         return $this;
     }
 
+    /**
+     * Parse and throw exception if there is error
+     *
+     * @param $value
+     * @return ValidationRule
+     */
     public function parse($value): ValidationRule {
         $this->value = $value;
         
         if (!$this->isValid()) {
             $className = explode('\\', static::class);
             $className = end($className);
+            
+            if (!in_array($className, array_map(fn($case) => $case->name, (new ReflectionEnum(ValidationRuleType::class))->getCases()))) {
+                $className = ValidationRuleType::Custom->name;
+            }
 
             throw new PvalidateException(current($this->getErrors()), ValidationRuleType::{$className});
         }
@@ -75,14 +76,14 @@ abstract class ValidationRule {
     }
     
     /**
-     * Undocumented function
+     * Check if data is valid for the rule
      *
      * @return boolean
      */
     abstract public function isValid(): bool;
 
     /**
-     * Undocumented function
+     * Get errors for this validation
      *
      * @return array
      */

@@ -9,9 +9,9 @@ use Attribute;
 #[Attribute]
 class Allow extends ValidationRule {
     /**
-     * Undocumented function
+     * Allow constructor
      *
-     * @param array $allowed
+     * @param array $allowed List of allowed values
      */
     public function __construct(private readonly array $allowed = []) {
 
