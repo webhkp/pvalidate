@@ -1,7 +1,7 @@
 <?php
 
+use Webhkp\Pvalidate\Rules\Required;
 use Webhkp\Pvalidate\Validator;
-use Webhkp\Pvalidate\Validators\Required;
 
 beforeAll(function () {
     class MyClass {
