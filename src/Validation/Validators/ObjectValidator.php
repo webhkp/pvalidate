@@ -6,7 +6,7 @@ namespace Webhkp\Pvalidate\Validation\Validators;
 
 use ReflectionClass;
 use ReflectionAttribute;
-use Webhkp\Pvalidate\Rules\AbstractRule;
+use Webhkp\Pvalidate\Rules\ValidationRule;
 use Webhkp\Pvalidate\Validation\ValidationResponse;
 
 
@@ -21,7 +21,7 @@ class ObjectValidator implements BaseValidator {
         $objReflection = new ReflectionClass($this->object);
 
         foreach ($objReflection->getProperties() as $prop) {
-            $attribs = $prop->getAttributes(AbstractRule::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attribs = $prop->getAttributes(ValidationRule::class, ReflectionAttribute::IS_INSTANCEOF);
 
             foreach ($attribs as $attrib) {
                 $result = $attrib->newInstance()->apply($prop, $this->object);

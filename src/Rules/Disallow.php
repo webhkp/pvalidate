@@ -5,22 +5,27 @@ declare(strict_types=1);
 namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
-use ReflectionProperty;
 
 #[Attribute]
-class Disallow extends AbstractRule {
+class Disallow extends ValidationRule {
     public function __construct(private readonly array $disallowed) {
     }
 
-    public function apply(ReflectionProperty $prop, object $object): static {
-        $value = $prop->getValue($object);
-
-        if (in_array($value, $this->disallowed)) {
-            $this->valid = false;
-
-            $this->errors['disallowed'] = $prop->name . ' should not be in the disallowed list (' . implode(',', $this->disallowed) . ')';
+    public function isValid(): bool {
+        if (in_array($this->value, $this->disallowed)) {
+            return false;
         }
 
-        return $this;
+        return true;
+    }
+
+    public function getErrors(): array {
+        $errors = [];
+
+        if (!$this->isValid()) {
+            $errors['disallowed'] = $this->name . ' should not be in the disallowed list (' . implode(',', $this->disallowed) . ')';
+        }
+
+        return $errors;
     }
 }

@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
-use ReflectionProperty;
 
 #[Attribute]
-class Range extends AbstractRule {
+class Range extends ValidationRule {
     public function __construct(
         readonly private ?float $min = null,
         readonly private ?float $max = null
@@ -16,21 +15,27 @@ class Range extends AbstractRule {
 
     }
 
-    public function apply(ReflectionProperty $prop, object $object): static {
-        $value = $prop->getValue($object);
-
-        if ($this->min !== null && $value < $this->min) {
-            $this->valid = false;
-
-            $this->errors['min'] = $prop->name . ' should be larger than or equal to ' . $this->min;
+    public function isValid(): bool {
+        if (($this->min !== null && $this->value < $this->min)
+            || ($this->max !== null && $this->value > $this->max)
+        ) {
+            return false;
         }
 
-        if ($this->max !== null && $value > $this->max) {
-            $this->valid = false;
+        return true;
+    }
 
-            $this->errors['max'] = $prop->name . ' should be smaller than or equal to ' . $this->max;
+    public function getErrors(): array {
+        $errors = [];
+
+        if ($this->min !== null && $this->value < $this->min) {
+            $errors['min'] = $this->name . ' should be larger than or equal to ' . $this->min;
         }
 
-        return $this;
+        if ($this->max !== null && $this->value > $this->max) {
+            $errors['max'] = $this->name . ' should be smaller than or equal to ' . $this->max;
+        }
+
+        return $errors;
     }
 }

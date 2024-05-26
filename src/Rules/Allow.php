@@ -5,23 +5,35 @@ declare(strict_types=1);
 namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
-use ReflectionProperty;
 
 #[Attribute]
-class Allow extends AbstractRule {
+class Allow extends ValidationRule {
+    /**
+     * Undocumented function
+     *
+     * @param array $allowed
+     */
     public function __construct(private readonly array $allowed = []) {
 
     }
 
-    public function apply(ReflectionProperty $prop, object $object): static {
-        $value = $prop->getValue($object);
-
-        if (!in_array($value, $this->allowed)) {
-            $this->valid = false;
-
-            $this->errors['allowed'] = $prop->name . ' should be in the allowed list (' . implode(',', $this->allowed) . ')';
+    public function isValid(): bool {
+        if (!in_array($this->value, $this->allowed)) {
+            return false;
         }
 
-        return $this;
+        return true;
     }
+
+    public function getErrors(): array {
+        $errors = [];
+
+        if (!$this->isValid()) {
+            $errors['allowed'] = $this->name . ' should be in the allowed list (' . implode(',', $this->allowed) . ')';
+        }
+
+        return $errors;
+    }
+
+    
 }
