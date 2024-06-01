@@ -10,32 +10,51 @@ use Attribute;
 class Range extends ValidationRule {
     public function __construct(
         readonly private ?float $min = null,
-        readonly private ?float $max = null
+        readonly private ?float $max = null,
+        readonly private bool $notEqual = false,
     ) {
 
     }
 
     public function isValid(): bool {
-        if (($this->min !== null && $this->value < $this->min)
-            || ($this->max !== null && $this->value > $this->max)
-        ) {
-            return false;
-        }
-
-        return true;
+        return match (true) {
+            ($this->min !== null && $this->notEqual && $this->value <= $this->min) => false,
+            ($this->min !== null && !$this->notEqual && $this->value < $this->min) => false,
+            ($this->max !== null && $this->notEqual && $this->value >= $this->max) => false,
+            ($this->max !== null && !$this->notEqual && $this->value > $this->max) => false,
+            default => true
+        };
     }
 
     public function getErrors(): array {
         $errors = [];
 
-        if ($this->min !== null && $this->value < $this->min) {
-            $errors['min'] = $this->name . ' should be larger than or equal to ' . $this->min;
+        $equalToPhrase = ($this->notEqual ? '' : 'or equal to');
+
+        if ($this->isMinFailure()) {
+            $errors['min'] = "{$this->name} should be larger than {$equalToPhrase} {$this->min}";
         }
 
-        if ($this->max !== null && $this->value > $this->max) {
-            $errors['max'] = $this->name . ' should be smaller than or equal to ' . $this->max;
+        if ($this->isMaxFailure()) {
+            $errors['max'] = "{$this->name} should be smaller than {$equalToPhrase} {$this->max}";
         }
 
         return $errors;
+    }
+
+    private function isMinFailure(): bool {
+        return match (true) {
+            ($this->min !== null && $this->notEqual && $this->value <= $this->min) => true,
+            ($this->min !== null && !$this->notEqual && $this->value < $this->min) => true,
+            default => false
+        };
+    }
+
+    private function isMaxFailure(): bool {
+        return match (true) {
+            ($this->max !== null && $this->notEqual && $this->value >= $this->max) => true,
+            ($this->max !== null && !$this->notEqual && $this->value > $this->max) => true,
+            default => false
+        };
     }
 }
