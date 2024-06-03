@@ -388,3 +388,55 @@ array(2) {
   }
 }
 ```
+
+
+## Validation Builder
+
+```php
+<?php
+
+require_once "vendor/autoload.php";
+
+use Webhkp\Pvalidate\ValidationBuilder;
+
+$validation = ValidationBuilder::required()->gt(11)->gte(200)->range(min: 1, max: 1000)->wrongMethod(20)->safeParse(11);
+
+var_dump($validation->isValid());
+var_dump($validation->getErrors());
+//var_dump($validation->getMessages());
+//var_dump($validation->getResult());
+
+```
+
+Output:
+
+```
+bool(false)
+
+array(2) {
+  ["gt"]=>
+  array(3) {
+    ["value"]=>
+    int(11)
+    ["valid"]=>
+    bool(false)
+    ["errors"]=>
+    array(1) {
+      ["min"]=>
+      string(26) " should be larger than  11"
+    }
+  }
+  ["gte"]=>
+  array(3) {
+    ["value"]=>
+    int(11)
+    ["valid"]=>
+    bool(false)
+    ["errors"]=>
+    array(1) {
+      ["min"]=>
+      string(38) " should be larger than or equal to 200"
+    }
+  }
+}
+```
