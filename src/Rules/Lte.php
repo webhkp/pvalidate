@@ -6,7 +6,7 @@ namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Lte extends Range {
     public function __construct(
         readonly private float $compareWith

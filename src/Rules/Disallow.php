@@ -6,7 +6,7 @@ namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Disallow extends ValidationRule {
     public function __construct(private readonly array $disallowed) {
     }

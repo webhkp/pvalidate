@@ -8,6 +8,8 @@ Whether you are building a small application or a large enterprise system, Pvali
 
 ### [Check the full documentation here](https://webhkp.com/pvalidate)
 
+### [Check the package on packagist.org](https://packagist.org/packages/webhkp/pvalidate)
+
 ## Installation
 
 ```bash
@@ -399,7 +401,7 @@ require_once "vendor/autoload.php";
 
 use Webhkp\Pvalidate\ValidationBuilder;
 
-$validation = ValidationBuilder::required()->gt(11)->gte(200)->range(min: 1, max: 1000)->wrongMethod(20)->safeParse(11);
+$validation = ValidationBuilder::required()->gt(11)->gte(200)->range(min: 1, max: 1000)->safeParse(11);
 
 var_dump($validation->isValid());
 var_dump($validation->getErrors());

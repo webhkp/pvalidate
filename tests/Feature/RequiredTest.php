@@ -3,11 +3,13 @@
 use Webhkp\Pvalidate\Rules\Required;
 use Webhkp\Pvalidate\Validator;
 
-beforeAll(function () {
-    class MyClass {
-        public function __construct(#[Required] public string $name) {
-
+beforeEach(function () {
+    $this->testObj = new class {
+        public function __construct() {
         }
+
+        #[Required] 
+        public string $name;
 
         #[Required]
         public string $address;
@@ -16,25 +18,23 @@ beforeAll(function () {
         public string $description;
 
         public string $normalAttrib;
-    }
+    };
 });
 
 describe("Required feature validation", function () {
     it('Should be valid', function () {
-        $myObj = new MyClass("Test ABC");
-        $myObj->address = "Some address string";
-        $myObj->description = "Some desc string for testing";
+        $this->testObj->name = "some name";
+        $this->testObj->address = "Some address string";
+        $this->testObj->description = "Some desc string for testing";
 
-        $validationResponse = Validator::validate($myObj);
+        $validationResponse = Validator::validate($this->testObj);
 
         expect($validationResponse->isValid())->toBeTrue();
         expect($validationResponse->getErrors())->toBeEmpty();
     });
 
     it('Should return errors', function () {
-        $myObj = new MyClass("");
-
-        $validationResponse = Validator::validate($myObj);
+        $validationResponse = Validator::validate($this->testObj);
 
         expect($validationResponse->isValid())->toBeFalse();
         expect($validationResponse->getErrors())->toHaveKeys(['name', 'address', 'description']);

@@ -7,7 +7,7 @@ namespace Webhkp\Pvalidate\Rules;
 use Attribute;
 use ReflectionProperty;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Required extends ValidationRule {
     private ReflectionProperty $prop;
     private object $object;
