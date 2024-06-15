@@ -27,14 +27,18 @@ class Range extends ValidationRule {
     public function getErrors(): array {
         $errors = [];
 
-        $equalToPhrase = ($this->notEqual ? '' : 'or equal to');
+        if ($this->min !== null && $this->max !== null && $this->min > $this->max) {
+            $errors['wrongParam'] = "max value ({$this->max}) should be greater than or equal to min value ({$this->min})";
+        } else {
+            $equalToPhrase = ($this->notEqual ? '' : 'or equal to');
 
-        if ($this->isMinFailure()) {
-            $errors['min'] = "{$this->name} should be larger than {$equalToPhrase} {$this->min}";
-        }
+            if ($this->isMinFailure()) {
+                $errors['min'] = "{$this->name} should be larger than {$equalToPhrase} {$this->min}";
+            }
 
-        if ($this->isMaxFailure()) {
-            $errors['max'] = "{$this->name} should be smaller than {$equalToPhrase} {$this->max}";
+            if ($this->isMaxFailure()) {
+                $errors['max'] = "{$this->name} should be smaller than {$equalToPhrase} {$this->max}";
+            }
         }
 
         return $errors;

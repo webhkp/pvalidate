@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Webhkp\Pvalidate\Rules\Builder;
 
-use Attribute;
 use Webhkp\Pvalidate\Rules\Length;
 use Webhkp\Pvalidate\Rules\ValidationRule;
 
-#[Attribute]
 class LengthRuleBuilder implements RuleBuilder {
     private $minLength;
     private $maxLength;

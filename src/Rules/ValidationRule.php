@@ -46,7 +46,7 @@ abstract class ValidationRule {
      * @param $value
      * @return ValidationRule
      */
-    public function safeParse($value): ValidationRule {
+    public function safeParse(mixed $value): ValidationRule {
         $this->value = $value;
 
         return $this;
@@ -58,7 +58,7 @@ abstract class ValidationRule {
      * @param $value
      * @return ValidationRule
      */
-    public function parse($value): ValidationRule {
+    public function parse(mixed $value): ValidationRule {
         $this->value = $value;
         
         if (!$this->isValid()) {
