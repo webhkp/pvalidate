@@ -6,7 +6,7 @@ namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Regex extends ValidationRule {
     public function __construct(private readonly string $regex) {
 

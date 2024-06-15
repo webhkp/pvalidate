@@ -6,7 +6,7 @@ namespace Webhkp\Pvalidate\Rules;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Range extends ValidationRule {
     public function __construct(
         readonly private ?float $min = null,
@@ -18,10 +18,8 @@ class Range extends ValidationRule {
 
     public function isValid(): bool {
         return match (true) {
-            ($this->min !== null && $this->notEqual && $this->value <= $this->min) => false,
-            ($this->min !== null && !$this->notEqual && $this->value < $this->min) => false,
-            ($this->max !== null && $this->notEqual && $this->value >= $this->max) => false,
-            ($this->max !== null && !$this->notEqual && $this->value > $this->max) => false,
+            $this->isMinFailure() => false,
+            $this->isMaxFailure() => false,
             default => true
         };
     }
