@@ -2,6 +2,11 @@
 
 ![Pvalidate](https://webhkp.com/wp-content/uploads/2024/05/Pvalidate-e1716833570347.png)
 
+![Latest Release](https://img.shields.io/github/v/release/webhkp/pvalidate)
+![Build Status](https://github.com/webhkp/pvalidate/actions/workflows/tests.yml/badge.svg)
+![Last Commit](https://img.shields.io/github/last-commit/webhkp/pvalidate)
+
+
 Pvalidate is a robust and flexible validation library for PHP. It is designed to simplify the process of validating data, ensuring data integrity, and enforcing business rules within your PHP applications.
 
 Whether you are building a small application or a large enterprise system, Pvalidate provides the tools you need to validate your data effectively and efficiently.
