@@ -1,6 +1,8 @@
 <?php
 
 use Webhkp\Pvalidate\Rules\Length;
+use Webhkp\Pvalidate\Rules\MaxLength;
+use Webhkp\Pvalidate\Rules\MinLength;
 use Webhkp\Pvalidate\ValidationBuilder;
 use Webhkp\Pvalidate\Validator;
 
@@ -20,6 +22,12 @@ beforeEach(function () {
 
         #[Length(min: 20, max: 50)]
         public string $fourthString = 'my fourth string';
+
+        #[MinLength(20)]
+        public string $minLengthTestString = 'abc';
+
+        #[MaxLength(10)]
+        public string $maxLengthTestString = 'abc def ghi jkl mno';
     };
 });
 
@@ -30,6 +38,8 @@ describe("Length Validation", function () {
             $this->testObj->secondString = "abc def ghi jkl mno pqr stu vwx yz";
             $this->testObj->thirdString = "abc def";
             $this->testObj->fourthString = "abc def ghi jkl mno pqr stu vwx yz";
+            $this->testObj->minLengthTestString = "abc def ghi jkl mno pqr stu vwx yz";
+            $this->testObj->maxLengthTestString = "abc def";
 
             $validationResponse = Validator::validate($this->testObj);
 
@@ -41,7 +51,7 @@ describe("Length Validation", function () {
             $validationResponse = Validator::validate($this->testObj);
 
             expect($validationResponse->isValid())->toBeFalse();
-            expect($validationResponse->getErrors())->toHaveKeys(['firstString', 'secondString', 'thirdString', 'fourthString']);
+            expect($validationResponse->getErrors())->toHaveKeys(['firstString', 'secondString', 'thirdString', 'fourthString', 'minLengthTestString', 'maxLengthTestString']);
         });
     });
 
@@ -51,6 +61,34 @@ describe("Length Validation", function () {
 
             expect($validation->isValid())->toBeFalse();
             expect($validation->getErrors())->toHaveKeys(['length.errors.maxLength']);
+        });
+
+        it('Should return error for minLength violation', function () {
+            $validation = ValidationBuilder::minLength(20)->safeParse('abc def');
+
+            expect($validation->isValid())->toBeFalse();
+            expect($validation->getErrors())->toHaveKeys(['minLength.errors.minLength']);
+        });
+
+        it('Should return error for maxLength violation', function () {
+            $validation = ValidationBuilder::maxLength(20)->safeParse('abc def ghi jkl mno pqr stu vwx yz');
+
+            expect($validation->isValid())->toBeFalse();
+            expect($validation->getErrors())->toHaveKeys(['maxLength.errors.maxLength']);
+        });
+
+        it('Should return error for length(min or max) violation', function () {
+            $validation = ValidationBuilder::minLength(10)->maxLength(20);
+
+            $validationResult = $validation->safeParse('abc');
+
+            expect($validationResult->isValid())->toBeFalse();
+            expect($validationResult->getErrors())->toHaveKeys(['minLength.errors.minLength']);
+
+            $validationResult = $validation->safeParse('abc def ghi jkl mno pqr stu vwx yz');
+
+            expect($validationResult->isValid())->toBeFalse();
+            expect($validationResult->getErrors())->toHaveKeys(['maxLength.errors.maxLength']);
         });
     });
 });
